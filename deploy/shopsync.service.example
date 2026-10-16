@@ -1,0 +1,31 @@
+# ==============================================================================
+# ShopSync — Systemd Service Unit Example (/etc/systemd/system/shopsync.service)
+# ==============================================================================
+# Production process supervision for ShopSync on Linux VPS (Ubuntu/Debian)
+# ==============================================================================
+
+[Unit]
+Description=ShopSync - Local Neighbourhood E-Commerce & Inventory Platform
+After=network.target
+
+[Service]
+Type=simple
+User=shopsync
+Group=shopsync
+WorkingDirectory=/var/www/shopsync
+EnvironmentFile=/var/www/shopsync/.env.production
+ExecStart=/usr/bin/node /var/www/shopsync/node_modules/next/dist/bin/next start -p 3000
+Restart=always
+RestartSec=5s
+
+# Security Hardening Directives
+ProtectSystem=full
+ProtectHome=true
+NoNewPrivileges=true
+PrivateTmp=true
+
+# Resource Limits
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target

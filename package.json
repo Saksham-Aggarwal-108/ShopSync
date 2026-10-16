@@ -1,0 +1,44 @@
+{
+  "name": "shopsync",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "start:backend": "node server.js",
+    "migrate": "node scripts/migrate.js",
+    "test": "node scripts/test_workflow.js",
+    "test:staging": "node scripts/test_staging.js",
+    "db:backup": "node scripts/backup.js",
+    "db:restore": "node scripts/restore.js"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@types/node": "^26.6.5",
+    "@types/nodemailer": "^8.0.2",
+    "@types/pg": "^8.23.1",
+    "lucide-react": "^1.57.0",
+    "next": "^14.2.35",
+    "nodemailer": "^10.1.1",
+    "pg": "^8.23.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "pg-mem": "^3.0.14",
+    "typescript": "^5.6.3"
+  }
+}

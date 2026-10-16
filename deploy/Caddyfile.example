@@ -1,0 +1,37 @@
+# ==============================================================================
+# ShopSync — Caddyfile Configuration Example
+# ==============================================================================
+# Reverse proxy with automated Let's Encrypt SSL/TLS certificates, HTTP/2,
+# gzip/zstd compression, and security header enforcement.
+# Replace shop.example.com with the shop's genuine registered domain.
+# ==============================================================================
+
+shop.example.com {
+    # Encode with modern compression (Zstandard and Gzip)
+    encode zstd gzip
+
+    # Reverse proxy to local ShopSync Next.js server on port 3000
+    reverse_proxy localhost:3000 {
+        header_up Host {host}
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+
+    # Security Headers
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    }
+
+    # Access and Error Logging
+    log {
+        output file /var/log/caddy/shopsync_access.log {
+            roll_size 10MiB
+            roll_keep 10
+        }
+    }
+}

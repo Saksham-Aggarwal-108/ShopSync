@@ -1,0 +1,43 @@
+# ==============================================================================
+# ShopSync — Docker Compose Specification (Staging & Production)
+# ==============================================================================
+# Demonstrates persistent volume mounting for data/shopsync.db, environment
+# secret injection, and health monitoring probes.
+# ==============================================================================
+
+version: '3.8'
+
+services:
+  shopsync:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: shopsync:latest
+    container_name: shopsync_app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - STRICT_PRODUCTION_SECRETS=true
+      # Inject secrets from .env file or host environment
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@greenwood.local}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - SESSION_SECRET=${SESSION_SECRET}
+      # SMTP configuration
+      - SMTP_HOST=${SMTP_HOST:-}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASS=${SMTP_PASS:-}
+      - SMTP_FROM=${SMTP_FROM:-Greenwood Provisions <orders@greenwoodprovisions.local>}
+      - SMTP_SECURE=${SMTP_SECURE:-false}
+    volumes:
+      # CRITICAL: Persistent volume mount preserves SQLite WAL database across restarts and updates
+      - ./data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s

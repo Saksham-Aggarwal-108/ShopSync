@@ -1,0 +1,42 @@
+# ==============================================================================
+# ShopSync — Render Web Service Infrastructure as Code (render.yaml)
+# Phase 6: Managed Node.js Backend API Deployment
+# ==============================================================================
+
+services:
+  - type: web
+    name: shopsync-api
+    runtime: node
+    plan: starter
+    region: frankfurt # Or oregon / ohio / singapore
+    buildCommand: npm install && npm run build
+    startCommand: node server.js
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        sync: false # Set securely in Render Dashboard to Supabase connection string
+      - key: DATABASE_SSL
+        value: "true"
+      - key: DB_POOL_MAX
+        value: "10"
+      - key: ADMIN_EMAIL
+        value: admin@greenwood.local
+      - key: ADMIN_PASSWORD
+        sync: false # Generate and set in Render Dashboard
+      - key: SESSION_SECRET
+        sync: false # Generate 32+ char random secret in Render Dashboard
+      - key: STRICT_PRODUCTION_SECRETS
+        value: "true"
+      - key: FRONTEND_URL
+        sync: false # Set to your Vercel deployment URL (e.g. https://shopsync.vercel.app)
+      - key: ALLOWED_ORIGINS
+        sync: false # Comma-separated Vercel preview domains if applicable
+      - key: CROSS_ORIGIN_COOKIES
+        value: "false" # Set to "true" only if calling API directly without Vercel rewrites
+      - key: SMTP_HOST
+        value: "" # Leave empty for SIMULATED mode until approved
